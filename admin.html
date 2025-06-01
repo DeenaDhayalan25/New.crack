@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - Orders</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #333; color: #fff; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    .items { font-size: 0.95em; color: #444; }
+  </style>
+</head>
+<body>
+  <h1>Order Admin Panel</h1>
+  <table id="ordersTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Items</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    fetch('http://localhost:3000/api/orders')
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector('#ordersTable tbody');
+        data.forEach(order => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${order.id}</td>
+            <td>${order.created_at}</td>
+            <td>${order.name}</td>
+            <td>${order.mobile}</td>
+            <td>${order.email}</td>
+            <td>${order.address}, ${order.city}, ${order.state}</td>
+            <td class="items">${JSON.parse(order.items).map(i => `${i[0]} x${i[1]}`).join('<br>')}</td>
+            <td>Rs. ${order.overall}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+  </script>
+</body>
+</html>
